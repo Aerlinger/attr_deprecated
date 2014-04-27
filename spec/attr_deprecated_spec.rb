@@ -4,7 +4,6 @@ class Foo
   attr_accessor :fresh_attribute, :an_unused_attribute
 end
 
-
 describe "Sample spec" do
   specify "AttrDeprecated is defined" do
     defined?(AttrDeprecated).should be_true
@@ -22,11 +21,25 @@ describe "Sample spec" do
       Foo.methods.should include(:attr_deprecated)
     end
 
-    specify "An attribute is defined as deprecated" do
-      Foo.class_eval { attr_deprecated :an_unused_attribute }
-      @f.methods.should include(:_an_unused_attribute_deprecated)
+    describe "declaring an unused attribute as deprecated" do
+      before do
+        Foo.class_eval { attr_deprecated :an_unused_attribute }
+      end
 
-      @f.an_unused_attribute.should eq("asdf")
+      specify "A getter attribute is defined as deprecated" do
+
+        @f.methods.should include(:__an_unused_attribute_deprecated)
+
+        @f.an_unused_attribute.should eq("asdf")
+      end
+
+      specify "A setter attribute is defined as deprecated" do
+        Foo.class_eval { attr_deprecated :an_unused_attribute }
+        #@f.methods.should include(:__an_unused_attribute_deprecated=)
+
+        @f.an_unused_attribute = "omg"
+        @f.an_unused_attribute.should eq("omg")
+      end
     end
   end
 

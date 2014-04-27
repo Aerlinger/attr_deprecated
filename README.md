@@ -44,14 +44,14 @@ Or install it yourself as:
     # .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands.rb:41:in `<top (required)>'
 
 ## Configuration
-Suppose you have a project with a `production`, `staging`, `development`, and `test` environment defined
+Suppose you have a project with a `production`, `staging`, `development`, and `test` environment defined. You can define the behavior of attr_deprecated for each environment through the config params:
 
     AttrDeprecated.configure do |config|
-      config.do_logging only: [:production, :staging, :development, :test]
-      config.do_exceptions only: [:production] # Can use except: [:d
+      config.do_logging = [:production, :staging, :development, :test]
+      config.do_exceptions = [:production]
 
       # Only if you're using Airbrake:
-      config.do_airbrake only: [:production, :staging]
+      config.do_airbrake = [:production, :staging]
     end
 
 ## TODO:
@@ -59,7 +59,7 @@ Print relevant bindings as well
 
 ## Contributing
 
-1. Fork it ( http://github.com/<my-github-username>/attr_deprecated/fork )
+1. Fork it ( http://github.com/Aerlinger/attr_deprecated/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

@@ -9,7 +9,10 @@ module AttrDeprecated
     base.send :extend, ClassMethods
   end
 
+  @@attrs_deprecated = []
+
   module ClassMethods
+
     ##
     # == attr_deprecated
     # class macro definition to non-destructively mark an attribute as deprecated.
@@ -18,36 +21,42 @@ module AttrDeprecated
     # (See the `around_alias` pattern. [Paolo Perotta. Metaprogramming Ruby, p. 121])
     #
     def attr_deprecated(*attr_names)
-      attr_names.each do |attr_name|
-        original_getter = "__#{attr_name}_deprecated".to_sym
-        original_setter = "__#{attr_name}_deprecated=".to_sym
+      @@attrs_deprecated = attr_names
 
-        # TODO: Use alias_attribute from ActiveSupport to handle both getter and setter
+      @@attrs_deprecated.each do |original_attr_name|
+        attributes = [original_attr_name,
+                      "#{original_attr_name}=".to_sym]
 
-        #alias_method(original_setter, "#{attr_name}=".to_sym)
-
-        # The getter
-        unless defined?(attr_name.to_sym)
-          define_method attr_name.to_sym, -> do
-            puts "WARNING: deprecated attribute #{original_getter} was called:"
-            puts Thread.current.backtrace.join("\n")
-
-            method(original_getter).call()
-          end
+        attributes.each do |attribute|
+          set_attribute_as_deprecated attribute
         end
+      end
+    end
 
-        # The setter
-        unless defined?("#{attr_name}=".to_sym)
-          define_method "#{attr_name}=".to_sym, ->(value) do
-            puts "WARNING: deprecated attribute #{original_setter} was called:"
-            puts Thread.current.backtrace.join("\n")
+    def attrs_deprecated
+      @@attrs_deprecated
+    end
 
-            method(original_setter).call(value)
-          end
+    def set_attribute_as_deprecated(attribute)
+      original_getter = "__deprecated_#{attribute}".to_sym
+
+      if instance_methods.include?(original_getter.to_sym)
+        remove_method original_getter.to_sym
+      end
+
+      if instance_methods.include?(attribute.to_sym)
+        alias_method(original_getter.to_sym, attribute.to_sym)
+
+        define_method attribute.to_sym do |*args|
+          msg = <<-MESSAGE
+            WARNING: deprecated attribute #{original_getter} was called:
+            #{Thread.current.backtrace.join("\n")}
+          MESSAGE
+
+          puts msg
+
+          send(original_getter, *args)
         end
-
-        alias_method(original_getter, attr_name.to_sym)
-        alias_method(original_setter, "#{attr_name}=".to_sym)
       end
     end
   end

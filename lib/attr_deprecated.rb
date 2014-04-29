@@ -11,8 +11,6 @@ module AttrDeprecated
 
   included do
     class_attribute :_deprecated_attributes, instance_writer: false
-
-    @_deprecation_logger = AttrDeprecated::DeprecatedAttributeLogger.new(self)
   end
 
   module ClassMethods
@@ -64,6 +62,8 @@ module AttrDeprecated
     end
 
     def _notify_deprecated_attribute_call(klass, attribute)
+      @_deprecation_logger ||= AttrDeprecated::DeprecatedAttributeLogger.new(self)
+
       @_deprecation_logger.log_deprecated_attribute_usage(klass, attribute)
     end
   end

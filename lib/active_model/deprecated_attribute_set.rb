@@ -1,3 +1,5 @@
+require 'set'
+
 module AttrDeprecated
   class DeprecatedAttributeSet < Set
     def ==(other_set)

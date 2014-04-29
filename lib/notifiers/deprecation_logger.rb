@@ -2,6 +2,7 @@ module AttrDeprecated
   class DeprecatedAttributeLogger
     def initialize(target)
       @target = target
+      super()
     end
 
     def logger

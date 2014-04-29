@@ -22,28 +22,35 @@ Or install it yourself as:
 
 ## Usage
 
+**In your model**
+
     class User < ActiveRecord::Base
       attr_deprecated :some_shit_column, :some_other_shit_column
 
       ...
     end
 
-    > User.attr_deprecated
-    #<Set: {"some_shit_column", "some_other_shit_column"}>
+**Example**:
 
-    > User.attr_deprecated? :some_other_shit_column
+    > User.attr_deprecated
+    #<DeprecatedAttributeSet: {"some_deprecated_column", "some_other_deprecated_column"}>
+
+    > User.attr_deprecated? :some_deprecated_column
     #true
 
-    > User.first.some_shit_column
-    # WARNING: User#some_shit_column is deprecated
-    #
-    # ...
+    > User.first.some_deprecated_column
+    # WARNING: Called deprecated attribute on User: some_deprecated_column
     # .../.rvm/rubies/ruby-2.1.0/lib/ruby/2.1.0/irb.rb:396:in `start'
     # .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands/console.rb:47:in `start'
     # .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands/console.rb:8:in `start'
     # .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands.rb:41:in `<top (required)>'
+    # ...
 
-## Configuration
+
+## TODO:
+
+Add configuration:
+
 Suppose you have a project with a `production`, `staging`, `development`, and `test` environment defined. You can define the behavior of attr_deprecated for each environment through the config params:
 
     AttrDeprecated.configure do |config|
@@ -54,8 +61,6 @@ Suppose you have a project with a `production`, `staging`, `development`, and `t
       config.do_airbrake = [:production, :staging]
     end
 
-## TODO:
-Print relevant bindings as well
 
 ## Contributing
 

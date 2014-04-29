@@ -1,18 +1,19 @@
 require "attr_deprecated/version"
+require "active_model/deprecated_attribute_set"
 
-require 'active_support'
+require 'active_support/concern'
 require 'active_record'
 require 'active_model'
 
 module AttrDeprecated
-  def self.included(base)
-    base.send :extend, ClassMethods
+  extend ActiveSupport::Concern
+
+  included do
+    class_attribute :_deprecated_attributes, instance_writer: false
   end
 
-  @@attrs_deprecated = []
 
   module ClassMethods
-
     ##
     # == attr_deprecated
     # class macro definition to non-destructively mark an attribute as deprecated.
@@ -21,28 +22,24 @@ module AttrDeprecated
     # (See the `around_alias` pattern. [Paolo Perotta. Metaprogramming Ruby, p. 121])
     #
     def attr_deprecated(*attr_names)
-      @@attrs_deprecated = attr_names
+      attr_names = DeprecatedAttributeSet.new(attr_names.compact)
 
-      @@attrs_deprecated.each do |original_attr_name|
-        attributes = [original_attr_name,
-                      "#{original_attr_name}=".to_sym]
+      self._deprecated_attributes ||= DeprecatedAttributeSet.new
 
-        attributes.each do |attribute|
-          set_attribute_as_deprecated attribute
-        end
+      # Taking the difference of the two sets ensures we don't deprecate the same attribute more than once
+      (attr_names - _deprecated_attributes).each do |attribute|
+        set_attribute_as_deprecated attribute
       end
+
+      self._deprecated_attributes += attr_names
     end
 
-    def attrs_deprecated
-      @@attrs_deprecated
+    def deprecated_attributes
+      _deprecated_attributes.to_a
     end
 
     def set_attribute_as_deprecated(attribute)
       original_getter = "__deprecated_#{attribute}".to_sym
-
-      if instance_methods.include?(original_getter.to_sym)
-        remove_method original_getter.to_sym
-      end
 
       if instance_methods.include?(attribute.to_sym)
         alias_method(original_getter.to_sym, attribute.to_sym)
@@ -63,5 +60,5 @@ module AttrDeprecated
 end
 
 ActiveSupport.on_load(:active_record) do
-  include AttrDeprecated
+  #require "active_record/"
 end

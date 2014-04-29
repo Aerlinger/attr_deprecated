@@ -25,7 +25,7 @@ Or install it yourself as:
 **In your model**
 
     class User < ActiveRecord::Base
-      attr_deprecated :some_shit_column, :some_other_shit_column
+      attr_deprecated :some_deprecated_column, :some_other_deprecated_column
 
       ...
     end
@@ -33,18 +33,18 @@ Or install it yourself as:
 **Example**:
 
     > User.attr_deprecated
-    #<DeprecatedAttributeSet: {"some_deprecated_column", "some_other_deprecated_column"}>
-
+     => <DeprecatedAttributeSet: {"some_deprecated_column", "some_other_deprecated_column"}>
+    >
     > User.attr_deprecated? :some_deprecated_column
-    #true
-
+     => true
+    >
     > User.first.some_deprecated_column
-    # WARNING: Called deprecated attribute on User: some_deprecated_column
-    # .../.rvm/rubies/ruby-2.1.0/lib/ruby/2.1.0/irb.rb:396:in `start'
-    # .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands/console.rb:47:in `start'
-    # .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands/console.rb:8:in `start'
-    # .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands.rb:41:in `<top (required)>'
-    # ...
+    WARNING: Called deprecated attribute on User: some_deprecated_column
+    .../.rvm/rubies/ruby-2.1.0/lib/ruby/2.1.0/irb.rb:396:in `start'
+    .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands/console.rb:47:in `start'
+    .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands/console.rb:8:in `start'
+    .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands.rb:41:in `<top (required)>'
+    ...
 
 
 ## TODO:

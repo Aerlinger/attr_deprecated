@@ -24,18 +24,22 @@ module AttrDeprecated
     # The original method (i.e. the one marked as deprecated) is renamed and wrapped in an alias that dispatches the notification.
     # (See the `around_alias` pattern. [Paolo Perotta. Metaprogramming Ruby, p. 121])
     #
-    def attr_deprecated(*attr_names)
-      attr_names = DeprecatedAttributeSet.new(attr_names.compact)
+    def attr_deprecated(*attributes)
+      attributes = DeprecatedAttributeSet.new(attributes.compact)
       self._deprecated_attributes ||= DeprecatedAttributeSet.new
 
       # Taking the difference of the two sets ensures we don't deprecate the same attribute more than once
-      (attr_names - _deprecated_attributes).each do |attribute|
+      (attributes - _deprecated_attributes).each do |attribute|
         _set_attribute_as_deprecated attribute
       end
 
-      self._deprecated_attributes += attr_names
+      self._deprecated_attributes += attributes
     end
 
+    def attr_deprecated?(attribute)
+      _deprecated_attributes.include?(attribute)
+    end
+    
     def deprecated_attributes
       _deprecated_attributes || DeprecatedAttributeSet.new
     end
@@ -45,16 +49,16 @@ module AttrDeprecated
     end
 
     def _set_attribute_as_deprecated(attribute)
-      original_getter = "__deprecated_#{attribute}".to_sym
+      original_attribute = "__deprecated_#{attribute}".to_sym
 
       if instance_methods.include?(attribute.to_sym)
-        alias_method(original_getter.to_sym, attribute.to_sym)
+        alias_method(original_attribute.to_sym, attribute.to_sym)
         klass = self
 
         define_method attribute.to_sym do |*args|
           klass._notify_deprecated_attribute_call(klass, attribute)
 
-          send(original_getter, *args)
+          send(original_attribute, *args)
         end
       end
     end
@@ -65,6 +69,7 @@ module AttrDeprecated
   end
 end
 
-ActiveSupport.on_load(:active_record) do
-  #require "active_record/"
+class ActiveRecord::Base
+  include AttrDeprecated
 end
+

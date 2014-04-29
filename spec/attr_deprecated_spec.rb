@@ -17,7 +17,7 @@ describe "Sample spec" do
   end
 
   it "has attr deprecated" do
-    Foo.attrs_deprecated.should eq [:an_unused_attribute]
+    Foo.deprecated_attributes.should eq [:an_unused_attribute]
   end
 
   describe "A class includes AttrDeprecated" do
@@ -30,7 +30,6 @@ describe "Sample spec" do
     describe "declaring an unused attribute as deprecated" do
       it "has correct shadow methods" do
         @f.methods.should include(:__deprecated_an_unused_attribute)
-        @f.methods.should include(:__deprecated_an_unused_attribute=)
       end
 
       specify "A getter attribute is defined as deprecated" do
@@ -44,9 +43,7 @@ describe "Sample spec" do
       end
 
       specify "A setter attribute is defined as deprecated" do
-        @f.should_receive(:__deprecated_an_unused_attribute=).exactly(1).times.and_call_original
-        #@f.should_not_receive(:__deprecated_an_unused_attribute)
-        #@f.should_not_receive(:an_unused_attribute)
+        @f.should_receive(:__deprecated_an_unused_attribute).exactly(1).times.and_call_original
 
         @f.an_unused_attribute = "omg"
         @f.an_unused_attribute.should eq("omg")
@@ -54,7 +51,30 @@ describe "Sample spec" do
 
       specify "calling attr_deprecated more than once shouldn't cause infinite regress" do
         Foo.class_eval { attr_deprecated :an_unused_attribute }
-        #@f.an_unused_attribute.should eq("omg")
+
+        @f.an_unused_attribute.should eq("asdf")
+      end
+
+      specify "calling attr_deprecated more than once shouldn't cause infinite regress" do
+        Foo.class_eval { attr_deprecated :fresh_attribute, :fresh_attribute}
+
+        @f.should_receive(:fresh_attribute).exactly(1).times.and_call_original
+        @f.should_receive(:__deprecated_fresh_attribute).exactly(1).times.and_call_original
+
+        @f.should_not_receive(:__deprecated_fresh_attribute=)
+
+        @f.fresh_attribute.should eq("fresh")
+      end
+
+    end
+
+    describe "clearing deprecated attributes" do
+      before do
+        Foo.clear_deprecated_attributes!
+      end
+
+      it "Doesn't have any deprecated attributes" do
+        Foo.deprecated_attributes.should eq []
       end
     end
   end

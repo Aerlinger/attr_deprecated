@@ -74,8 +74,20 @@ describe "Sample spec" do
       end
 
       it "Doesn't have any deprecated attributes" do
-        Foo.deprecated_attributes.should eq []
+        Foo.deprecated_attributes.should eq([])
       end
+    end
+  end
+
+  describe "A class doesn't have any deprecated attributes initially" do
+    before do
+      @dummy_class = Class.new do
+        include AttrDeprecated
+      end
+    end
+
+    it "empty deprecated attributes" do
+      @dummy_class.deprecated_attributes.should eq([])
     end
   end
 end

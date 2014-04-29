@@ -37,7 +37,7 @@ module AttrDeprecated
     end
 
     def deprecated_attributes
-      _deprecated_attributes
+      _deprecated_attributes || DeprecatedAttributeSet.new
     end
 
     def clear_deprecated_attributes!

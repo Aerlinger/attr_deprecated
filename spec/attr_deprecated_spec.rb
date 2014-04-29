@@ -33,7 +33,7 @@ describe "Sample spec" do
       end
 
       specify ".attr_deprecated? includes :an_unused_attribute" do
-        Foo.attr_deprecated?(:an_unused_attribute).should be_true
+        Foo.deprecated_attribute?(:an_unused_attribute).should be_true
       end
 
       specify "A getter attribute is defined as deprecated" do

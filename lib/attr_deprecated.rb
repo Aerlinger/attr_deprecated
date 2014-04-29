@@ -34,7 +34,7 @@ module AttrDeprecated
       self._deprecated_attributes += attributes
     end
 
-    def attr_deprecated?(attribute)
+    def deprecated_attribute?(attribute)
       _deprecated_attributes.include?(attribute)
     end
     
@@ -67,7 +67,4 @@ module AttrDeprecated
   end
 end
 
-class ActiveRecord::Base
-  include AttrDeprecated
-end
 

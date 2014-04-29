@@ -49,22 +49,20 @@ module AttrDeprecated
     def _set_attribute_as_deprecated(attribute)
       original_attribute = "__deprecated_#{attribute}".to_sym
 
-      if instance_methods.include?(attribute.to_sym)
-        alias_method(original_attribute.to_sym, attribute.to_sym)
-        klass = self
+      alias_method(original_attribute.to_sym, attribute.to_sym)
+      klass = self
 
-        define_method attribute.to_sym do |*args|
-          klass._notify_deprecated_attribute_call(klass, attribute)
+      define_method attribute.to_sym do |*args|
+        klass._notify_deprecated_attribute_call(attribute)
 
-          send(original_attribute, *args)
-        end
+        send(original_attribute.to_sym, *args)
       end
     end
 
-    def _notify_deprecated_attribute_call(klass, attribute)
+    def _notify_deprecated_attribute_call(attribute)
       @_deprecation_logger ||= AttrDeprecated::DeprecatedAttributeLogger.new(self)
 
-      @_deprecation_logger.log_deprecated_attribute_usage(klass, attribute)
+      @_deprecation_logger.log_deprecated_attribute_usage(self, attribute)
     end
   end
 end

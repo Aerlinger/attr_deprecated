@@ -38,6 +38,10 @@ module AttrDeprecated
       _deprecated_attributes.to_a
     end
 
+    def clear_deprecated_attributes!
+      self._deprecated_attributes = _deprecated_attributes.clear
+    end
+
     def set_attribute_as_deprecated(attribute)
       original_getter = "__deprecated_#{attribute}".to_sym
 

@@ -5,7 +5,9 @@ module AttrDeprecated
     initializer "attr_deprecated.active_record", :before => "active_record.set_configs" do |app|
       ActiveSupport.on_load :active_record do
         if app.config.respond_to?(:active_record)
-          attr_deprecated(nil)
+          class ActiveRecord::Base
+            include AttrDeprecated
+          end
         end
       end
     end

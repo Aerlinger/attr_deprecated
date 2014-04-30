@@ -51,6 +51,11 @@ module AttrDeprecated
     end
 
     def _set_attribute_as_deprecated(attribute)
+      # Ensure the attribute is initialized
+      if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
+        new(attribute.to_sym => nil)
+      end
+
       original_method = instance_method(attribute.to_sym)
 
       klass = self
@@ -80,7 +85,7 @@ module AttrDeprecated
   end
 end
 
-if defined? Rails
+if defined? Rails || ENV['test']
   class ActiveRecord::Base
     include AttrDeprecated
   end

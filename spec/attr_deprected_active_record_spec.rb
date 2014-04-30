@@ -1,5 +1,9 @@
 require 'spec_helper'
 
+class User < ActiveRecord::Base
+  attr_deprecated :a_deprecated_attribute
+end
+
 describe "Integration with ActiveRecord" do
   before do
     ActiveRecord::Base.send(:descendants).each do |klass|
@@ -13,10 +17,6 @@ describe "Integration with ActiveRecord" do
   let!(:user) { User.new(name: "rspec", a_deprecated_attribute: "wtf") }
 
   it "has :a_deprecated_attribute method" do
-    class User < ActiveRecord::Base
-      attr_deprecated :a_deprecated_attribute
-    end
-
     User.instance_methods.should include(:a_deprecated_attribute)
   end
 

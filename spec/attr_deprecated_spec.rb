@@ -3,7 +3,8 @@ require 'spec_helper'
 class Foo
   include AttrDeprecated
 
-  attr_accessor :fresh_attribute, :an_unused_attribute
+  attr_accessor :fresh_attribute,
+                :an_unused_attribute
   attr_deprecated :an_unused_attribute
 end
 

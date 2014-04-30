@@ -1,6 +1,8 @@
 require 'bundler/setup'
 Bundler.setup
 
+ENV['test'] = 'test'
+
 require 'attr_deprecated'
 require 'support/active_record'
 

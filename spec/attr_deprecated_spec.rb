@@ -28,27 +28,20 @@ describe "Sample spec" do
     end
 
     describe "declaring an unused attribute as deprecated" do
-      it "has correct shadow methods" do
-        @f.methods.should include(:__deprecated_an_unused_attribute)
-      end
-
       specify ".attr_deprecated? includes :an_unused_attribute" do
         Foo.deprecated_attribute?(:an_unused_attribute).should be_true
       end
 
       specify "A getter attribute is defined as deprecated" do
         @f.should_receive(:an_unused_attribute).exactly(1).times.and_call_original
-        @f.should_receive(:__deprecated_an_unused_attribute).exactly(1).times.and_call_original
         Foo.should_receive(:_notify_deprecated_attribute_call)
 
-        @f.should_not_receive(:__deprecated_an_unused_attribute=)
         @f.should_not_receive(:an_unused_attribute=)
 
         @f.an_unused_attribute.should eq("asdf")
       end
 
       specify "A setter attribute is defined as deprecated" do
-        @f.should_receive(:__deprecated_an_unused_attribute).exactly(2).times.and_call_original
         Foo.should_receive(:_notify_deprecated_attribute_call).exactly(2).times.and_call_original
 
         @f.an_unused_attribute = "omg"
@@ -70,9 +63,6 @@ describe "Sample spec" do
 
       it "only calls fresh_attribute once" do
         @f.should_receive(:fresh_attribute).exactly(1).times.and_call_original
-        @f.should_receive(:__deprecated_fresh_attribute).exactly(1).times.and_call_original
-
-        @f.should_not_receive(:__deprecated_fresh_attribute=)
 
         @f.fresh_attribute.should eq("fresh")
       end

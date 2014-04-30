@@ -80,7 +80,8 @@ module AttrDeprecated
   end
 end
 
-
-class ActiveRecord::Base
-  include AttrDeprecated
+if defined? Rails
+  class ActiveRecord::Base
+    include AttrDeprecated
+  end
 end

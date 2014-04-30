@@ -1,6 +1,8 @@
 # AttrDeprecated
 
-A simple and non-intrusive way to mark deprecated columns/attributes in your models. Any usage of these attributes will logged with a warning message and a trace of where the deprecated attribute was called. An exception can be optionally raised as well.
+A simple and non-intrusive way to mark deprecated columns/attributes in your models so they may be more safely removed.
+Any usage of a deprecated attribute will be logged with a warning message and a trace of where the deprecated attribute
+was called. Exceptions and Airbrake messages can be raised as well.
 
 ## Why?
 

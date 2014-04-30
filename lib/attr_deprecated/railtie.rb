@@ -1,4 +1,4 @@
-require 'railtie'
+require 'rails/railtie'
 
 module AttrDeprecated
   class Railtie < ::Rails::Railtie

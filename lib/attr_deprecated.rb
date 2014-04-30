@@ -1,8 +1,12 @@
+require 'active_support'
+
+require "attr_deprecated/railtie" if defined? Rails
 require "attr_deprecated/version"
+require "attr_deprecated/configuration"
+
 require "notifiers/deprecation_logger"
 require "active_model/deprecated_attribute_set"
 
-require 'active_support/concern'
 require 'active_record'
 require 'active_model'
 
@@ -23,7 +27,7 @@ module AttrDeprecated
     # (See the `around_alias` pattern. [Paolo Perotta. Metaprogramming Ruby, p. 121])
     #
     def attr_deprecated(*attributes)
-      attributes = DeprecatedAttributeSet.new(attributes.compact)
+      attributes                  = DeprecatedAttributeSet.new(attributes.compact)
       self._deprecated_attributes ||= DeprecatedAttributeSet.new
 
       # Taking the difference of the two sets ensures we don't deprecate the same attribute more than once
@@ -37,7 +41,7 @@ module AttrDeprecated
     def deprecated_attribute?(attribute)
       _deprecated_attributes.include?(attribute)
     end
-    
+
     def deprecated_attributes
       _deprecated_attributes || DeprecatedAttributeSet.new
     end
@@ -47,15 +51,14 @@ module AttrDeprecated
     end
 
     def _set_attribute_as_deprecated(attribute)
-      original_attribute = "__deprecated_#{attribute}".to_sym
+      original_method = instance_method(attribute.to_sym)
 
-      alias_method(original_attribute.to_sym, attribute.to_sym)
       klass = self
 
       define_method attribute.to_sym do |*args|
         klass._notify_deprecated_attribute_call(attribute)
 
-        send(original_attribute.to_sym, *args)
+        original_method.bind(self).call(*args)
       end
     end
 
@@ -67,4 +70,17 @@ module AttrDeprecated
   end
 end
 
+module AttrDeprecated
+  class << self
+    include AttrDeprecated::Configuration
 
+    def configure(&block)
+      AttrDeprecated::Configuration.configure(&block)
+    end
+  end
+end
+
+
+class ActiveRecord::Base
+  include AttrDeprecated
+end

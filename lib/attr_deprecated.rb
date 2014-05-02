@@ -53,13 +53,12 @@ module AttrDeprecated
     def _set_attribute_as_deprecated(attribute)
       # Ensure the attribute is initialized
       if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
-        new(attribute.to_sym => nil)
+        new({attribute.to_sym => nil}, without_protection: true)
       end
 
       original_method = instance_method(attribute.to_sym)
 
       klass = self
-
       define_method attribute.to_sym do |*args|
         klass._notify_deprecated_attribute_call(attribute)
 

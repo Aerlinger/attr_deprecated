@@ -30,6 +30,11 @@ module AttrDeprecated
       attributes                  = DeprecatedAttributeSet.new(attributes.compact)
       self._deprecated_attributes ||= DeprecatedAttributeSet.new
 
+      # Rails uses lazy initialization to wrap methods, so make sure we pre-initialize any deprecated attributes
+      if defined?(ActiveRecord) && ancestors.include?(ActiveRecord::Base)
+        new(Hash[attributes.zip(attributes.map {})], without_protection: true)
+      end
+
       # Taking the difference of the two sets ensures we don't deprecate the same attribute more than once
       (attributes - _deprecated_attributes).each do |attribute|
         _set_attribute_as_deprecated attribute
@@ -51,11 +56,6 @@ module AttrDeprecated
     end
 
     def _set_attribute_as_deprecated(attribute)
-      # Ensure the attribute is initialized
-      if defined?(ActiveRecord) && self.ancestors.include?(ActiveRecord::Base)
-        new({attribute.to_sym => nil}, without_protection: true)
-      end
-
       original_method = instance_method(attribute.to_sym)
 
       klass = self

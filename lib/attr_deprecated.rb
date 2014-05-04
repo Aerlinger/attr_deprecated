@@ -1,6 +1,5 @@
 require 'active_support'
 
-require "attr_deprecated/railtie" if defined? Rails
 require "attr_deprecated/version"
 require "attr_deprecated/configuration"
 
@@ -88,4 +87,6 @@ if defined? Rails || ENV['test']
   class ActiveRecord::Base
     include AttrDeprecated
   end
+
+  require 'attr_deprecated/railtie.rb' if defined?(Rails)
 end

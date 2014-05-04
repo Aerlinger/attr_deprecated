@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["anthony@handybook.com"]
   spec.summary       = %q{Mark unused model attributes as deprecated.}
   spec.description   = %q{A simple and non-intrusive way to mark deprecated columns/attributes in your models. Any usage of these attributes will logged with a warning message and a trace of where the deprecated attribute was called. An exception can be optionally raised as well.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/Aerlinger/attr_deprecated"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

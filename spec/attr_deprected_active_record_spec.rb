@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   attr_deprecated :a_deprecated_attribute
 end
 
-describe "Integration with ActiveRecord" do
+RSpec.describe "Integration with ActiveRecord" do
   before do
     ActiveRecord::Base.send(:descendants).each do |klass|
       begin
@@ -17,13 +17,13 @@ describe "Integration with ActiveRecord" do
   let!(:user) { User.new(name: "rspec", a_deprecated_attribute: "wtf") }
 
   it "has :a_deprecated_attribute method" do
-    User.instance_methods.should include(:a_deprecated_attribute)
+    expect(User.instance_methods).to include(:a_deprecated_attribute)
   end
 
   it "ensures we've initialized ActiveRecord correctly for our test suite" do
     user.save!
 
-    expect(user.persisted?).to be_true
+    expect(user.persisted?).to be
     expect(user.a_deprecated_attribute).to eq("wtf")
   end
 

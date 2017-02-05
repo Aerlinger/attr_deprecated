@@ -22,7 +22,7 @@ module AttrDeprecated
     end
 
     def log_deprecated_attribute_usage(klass, *attrs)
-      warning_message = "WARNING: Called deprecated attribute on #{klass.name}: #{attrs.join(', ')}\n" +
+      warning_message = "DEPRECATION WARNING: Called deprecated attribute on #{klass.name}: #{attrs.join(', ')}\n" +
         backtrace.map { |trace| "\t#{trace}" }.join("\n")
       if logger?
         logger.warn do

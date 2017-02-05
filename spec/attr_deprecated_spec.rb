@@ -8,17 +8,17 @@ class Foo
   attr_deprecated :an_unused_attribute
 end
 
-describe "Sample spec" do
+RSpec.describe "Sample spec" do
   specify "AttrDeprecated is defined" do
-    defined?(AttrDeprecated).should be_true
+    expect(defined?(AttrDeprecated)).to be
   end
 
   specify "A class that extends AttrDeprecated::Model will have attr_deprecated defined" do
-    Foo.methods.should include(:attr_deprecated)
+    expect(Foo.methods).to include(:attr_deprecated)
   end
 
   it "has attr deprecated" do
-    Foo.deprecated_attributes.should eq [:an_unused_attribute]
+    expect(Foo.deprecated_attributes).to eq [:an_unused_attribute]
   end
 
   describe "A class includes AttrDeprecated" do
@@ -30,30 +30,30 @@ describe "Sample spec" do
 
     describe "declaring an unused attribute as deprecated" do
       specify ".attr_deprecated? includes :an_unused_attribute" do
-        Foo.deprecated_attribute?(:an_unused_attribute).should be_true
+        expect(Foo.deprecated_attribute?(:an_unused_attribute)).to be
       end
 
       specify "A getter attribute is defined as deprecated" do
-        @f.should_receive(:an_unused_attribute).exactly(1).times.and_call_original
-        Foo.should_receive(:_notify_deprecated_attribute_call)
+        expect(@f).to receive(:an_unused_attribute).exactly(1).times.and_call_original
+        expect(Foo).to receive(:_notify_deprecated_attribute_call)
 
-        @f.should_not_receive(:an_unused_attribute=)
+        expect(@f).to_not receive(:an_unused_attribute=)
 
-        @f.an_unused_attribute.should eq("asdf")
+        expect(@f.an_unused_attribute).to eq("asdf")
       end
 
       specify "A setter attribute is defined as deprecated" do
-        Foo.should_receive(:_notify_deprecated_attribute_call).exactly(2).times.and_call_original
+        expect(Foo).to receive(:_notify_deprecated_attribute_call).exactly(2).times.and_call_original
 
         @f.an_unused_attribute = "omg"
         @f.an_unused_attribute
-        @f.an_unused_attribute.should eq("omg")
+        expect(@f.an_unused_attribute).to eq("omg")
       end
 
       specify "calling attr_deprecated more than once shouldn't cause infinite regress" do
         Foo.class_eval { attr_deprecated :an_unused_attribute }
 
-        @f.an_unused_attribute.should eq("asdf")
+        expect(@f.an_unused_attribute).to eq("asdf")
       end
     end
 
@@ -63,9 +63,9 @@ describe "Sample spec" do
       end
 
       it "only calls fresh_attribute once" do
-        @f.should_receive(:fresh_attribute).exactly(1).times.and_call_original
+        expect(@f).to receive(:fresh_attribute).exactly(1).times.and_call_original
 
-        @f.fresh_attribute.should eq("fresh")
+        expect(@f.fresh_attribute).to eq("fresh")
       end
     end
 
@@ -75,7 +75,7 @@ describe "Sample spec" do
       end
 
       it "Doesn't have any deprecated attributes" do
-        Foo.deprecated_attributes.should eq([])
+        expect(Foo.deprecated_attributes).to eq([])
       end
     end
   end
@@ -88,7 +88,7 @@ describe "Sample spec" do
     end
 
     it "empty deprecated attributes" do
-      @dummy_class.deprecated_attributes.should eq([])
+      expect(@dummy_class.deprecated_attributes).to eq([])
     end
 
     it "calling attr_deprecated alone doesn't raise an error" do
@@ -96,7 +96,7 @@ describe "Sample spec" do
         attr_deprecated
       end
 
-      @dummy_class.deprecated_attributes.should eq([])
+      expect(@dummy_class.deprecated_attributes).to eq([])
     end
   end
 end

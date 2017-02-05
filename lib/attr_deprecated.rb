@@ -31,7 +31,9 @@ module AttrDeprecated
 
       # Rails uses lazy initialization to wrap methods, so make sure we pre-initialize any deprecated attributes
       if defined?(ActiveRecord) && ancestors.include?(ActiveRecord::Base)
-        new(Hash[attributes.zip(attributes.map {})], without_protection: true)
+
+        # Initialize a new instance of our ActiveRecord model from `attributes`
+        new(Hash[attributes.zip(attributes.map {})])
       end
 
       # Taking the difference of the two sets ensures we don't deprecate the same attribute more than once

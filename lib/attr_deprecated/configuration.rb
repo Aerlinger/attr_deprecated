@@ -1,23 +1,28 @@
-require 'active_support/concern'
-
 module AttrDeprecated
-  module Configuration
-    extend ActiveSupport::Concern
+  class << self
+    attr_writer :configuration
+  end
 
-    included do
-      add_config :log_environments
-      add_config :exception_environments
-      add_config :airbrake_environments
-    end
+  def self.configuration
+    @configuration ||= Configuration.new
+  end
 
-    module ClassMethods
-      def configure
-        yield self
-      end
+  def self.configure
+    yield(configuration)
+  end
 
-      def add_config(value)
-        @name = value if value
-      end
+  def self.reset
+    @configuration = Configuration.new
+  end
+
+  class Configuration
+    attr_accessor :enable, :full_trace, :raise, :log, :slack
+
+    def initialize
+      @enabled       = true
+      @full_trace   = false
+      @raise        = false
+      @rails_logger = { level: :debug, color: true }
     end
   end
 end

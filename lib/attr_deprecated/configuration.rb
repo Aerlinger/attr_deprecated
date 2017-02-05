@@ -16,10 +16,10 @@ module AttrDeprecated
   end
 
   class Configuration
-    attr_accessor :enable, :full_trace, :raise, :log, :slack
+    attr_accessor :enable, :full_trace, :raise, :rails_logger
 
     def initialize
-      @enabled       = true
+      @enable       = true
       @full_trace   = false
       @raise        = false
       @rails_logger = { level: :debug, color: true }

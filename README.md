@@ -2,7 +2,7 @@
 
 A simple and non-intrusive way to mark deprecated columns/attributes in your models so they may be more safely removed.
 Any usage of a deprecated attribute will be logged with a warning message and a trace of where the deprecated attribute
-was called. Exceptions and Airbrake messages can be raised as well.
+was called. Exceptions can be raised as well.
 
 ## Why?
 
@@ -22,15 +22,29 @@ Or install it yourself as:
 
     $ gem install attr_deprecated
 
+## Configuration
+
+```ruby
+AttrDeprecated.configure do |config|
+  config.raise = false
+  config.notifiers = {
+    log: { level: :debug }
+  }
+end
+```
+
+
 ## Usage
 
-**In your model**
+**In your model:**
 
-    class User < ActiveRecord::Base
-      attr_deprecated :some_deprecated_column, :some_other_deprecated_column
+```ruby
+class User < ActiveRecord::Base
+  attr_deprecated :some_deprecated_column, :some_other_deprecated_column
 
-      ...
-    end
+  ...
+end
+```
 
 **Example**:
 
@@ -40,7 +54,7 @@ Or install it yourself as:
     > User.attr_deprecated? :some_deprecated_column
      => true
     >
-    > User.first.some_deprecated_column
+    > User.new.some_deprecated_column
     WARNING: Called deprecated attribute on User: some_deprecated_column
     .../.rvm/rubies/ruby-2.1.0/lib/ruby/2.1.0/irb.rb:396:in `start'
     .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands/console.rb:47:in `start'
@@ -51,18 +65,32 @@ Or install it yourself as:
 
 ## TODO:
 
-Add configuration:
+This gem is still a work in progress,
+
+**1. Improve configuration**
 
 Suppose you have a project with a `production`, `staging`, `development`, and `test` environment defined. You can define the behavior of attr_deprecated for each environment through the config params:
 
-    AttrDeprecated.configure do |config|
-      config.do_logging = [:production, :staging, :development, :test]
-      config.do_exceptions = [:production]
+```ruby
+AttrDeprecated.configure do |config|
+  config.do_logging = [:production, :staging, :development, :test]
+  config.do_exceptions = [:production]
 
-      # Only if you're using Airbrake:
-      config.do_airbrake = [:production, :staging]
-    end
+  # Only if you're using Airbrake:
+  config.do_airbrake = [:production, :staging]
+end
+```
 
+**2. Add rake tasks to deploy gem **
+
+**3. Improve examples and documentation. **
+
+**4. Add Travis. **
+
+## Future Work:
+**2. Add ability to mark routes as deprecated **
+
+**Add configuration:**
 
 ## Contributing
 

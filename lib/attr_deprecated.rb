@@ -3,7 +3,7 @@ require 'active_support'
 require "attr_deprecated/version"
 require "attr_deprecated/configuration"
 
-require "notifiers/deprecation_logger"
+require "notifiers/rails_logger"
 require "active_model/deprecated_attribute_set"
 
 require 'active_record'
@@ -56,36 +56,35 @@ module AttrDeprecated
       self._deprecated_attributes = _deprecated_attributes.clear
     end
 
+    ##
+    # Wrap the original attribute method with appropriate notification while leaving the functionality
+    # of the original method unchanged.
     def _set_attribute_as_deprecated(attribute)
       original_method = instance_method(attribute.to_sym)
 
       klass = self
       define_method attribute.to_sym do |*args|
-        klass._notify_deprecated_attribute_call(attribute)
+        backtrace_cleaner = ActiveSupport::BacktraceCleaner.new
 
+        backtrace = backtrace_cleaner.clean(caller)
+
+        klass._notify_deprecated_attribute_call({klass: self, attribute: attribute, args: args, backtrace: backtrace})
+
+        # Call the original
         original_method.bind(self).call(*args)
       end
     end
 
-    def _notify_deprecated_attribute_call(attribute)
-      @_deprecation_logger ||= AttrDeprecated::DeprecatedAttributeLogger.new(self)
-
-      @_deprecation_logger.log_deprecated_attribute_usage(self, attribute)
+    ##
+    # Notify the logger notification observer(s)
+    def _notify_deprecated_attribute_call(payload)
+      ActiveSupport::Notifications.instrument("deprecated_attributes.active_record", payload)
     end
   end
 end
 
-module AttrDeprecated
-  class << self
-    include AttrDeprecated::Configuration
 
-    def configure(&block)
-      AttrDeprecated::Configuration.configure(&block)
-    end
-  end
-end
-
-if defined? Rails || ENV['test']
+if defined?(ActiveRecord::Base)
   class ActiveRecord::Base
     include AttrDeprecated
   end

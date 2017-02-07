@@ -24,7 +24,6 @@ RSpec.describe "AttrDeprecated" do
       expect(AttrDeprecated.configuration.enable).to be(true)
       expect(AttrDeprecated.configuration.raise).to be(false)
       expect(AttrDeprecated.configuration.rails_logger).to eql({ level: :debug, color: true })
-      # expect(AttrDeprecated.configuration.slack).to eql({ webhook_url: 'http://your.slack.webhook.url', channel: '#default', username: 'notifier' })
     end
 
     it "allows configuration" do
@@ -38,7 +37,6 @@ RSpec.describe "AttrDeprecated" do
       expect(AttrDeprecated.configuration.enable).to be(false)
       expect(AttrDeprecated.configuration.raise).to be(true)
       expect(AttrDeprecated.configuration.rails_logger).to eql({ level: :error })
-      # expect(AttrDeprecated.configuration.slack).to eql({ webhook_url: 'http://my.webhook', channel: '#my-channel', username: 'notifications' })
     end
   end
 

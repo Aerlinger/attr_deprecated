@@ -14,20 +14,20 @@ RSpec.describe "Integration with ActiveRecord", pending: true do
     end
   end
 
-  let!(:user) { User.new(name: "rspec", a_deprecated_attribute: "wtf") }
+  let!(:user) { User.new(name: "rspec", a_deprecated_attribute: "this_is_deprecated") }
 
-  xit "has :a_deprecated_attribute method" do
+  it "has :a_deprecated_attribute method" do
     expect(User.instance_methods).to include(:a_deprecated_attribute)
   end
 
-  xit "ensures we've initialized ActiveRecord correctly for our test suite" do
+  it "ensures we've initialized ActiveRecord correctly for our test suite" do
     user.save!
 
     expect(user.persisted?).to be
-    expect(user.a_deprecated_attribute).to eq("wtf")
+    expect(user.a_deprecated_attribute).to eq("this_is_deprecated")
   end
 
-  xit "has one deprecated attribute" do
+  it "has one deprecated attribute" do
     expect(User.deprecated_attributes).to eq([:a_deprecated_attribute])
   end
 end

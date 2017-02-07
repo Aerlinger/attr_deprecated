@@ -1,26 +1,21 @@
-# AttrDeprecated
+# attr_deprecated
 
 A simple and non-intrusive way to mark deprecated columns/attributes in your models so they may be more safely removed.
 Any usage of a deprecated attribute will be logged with a warning message and a trace of where the deprecated attribute
 was called. Exceptions can be raised as well.
 
+*AttrDeprecated is a work in progress*
+
 ## Why?
 
-Because we all have crap we don't want in our schema but are too afraid to remove.
+Because we all have crap we don't want in our schema but are too afraid to remove. Use `attr_deprecated` to mark specific
+attributes in a model and will log a deprecation warning if the attribute is called in your code.
+
+attr_deprecated will automatically hook into ActiveModel, however, it can also be used with plain-old Ruby classes.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'attr_deprecated'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install attr_deprecated
+  gem 'attr_deprecated'
 
 ## Configuration
 
@@ -62,35 +57,6 @@ end
     .../.rvm/gems/ruby-2.1.0/gems/railties-3.2.17/lib/rails/commands.rb:41:in `<top (required)>'
     ...
 
-
-## TODO:
-
-This gem is still a work in progress,
-
-**1. Improve configuration**
-
-Suppose you have a project with a `production`, `staging`, `development`, and `test` environment defined. You can define the behavior of attr_deprecated for each environment through the config params:
-
-```ruby
-AttrDeprecated.configure do |config|
-  config.do_logging = [:production, :staging, :development, :test]
-  config.do_exceptions = [:production]
-
-  # Only if you're using Airbrake:
-  config.do_airbrake = [:production, :staging]
-end
-```
-
-**2. Add rake tasks to deploy gem **
-
-**3. Improve examples and documentation. **
-
-**4. Add Travis. **
-
-## Future Work:
-**2. Add ability to mark routes as deprecated **
-
-**Add configuration:**
 
 ## Contributing
 

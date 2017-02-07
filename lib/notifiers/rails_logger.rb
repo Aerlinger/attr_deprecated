@@ -1,3 +1,6 @@
+##
+# Extend Rails logger and subscribe it to a "deprecated_attributes" event which is dispatched from
+# the attr_deprecated main class.
 module AttrDeprecated
   class LogSubscriber < ActiveSupport::LogSubscriber
 

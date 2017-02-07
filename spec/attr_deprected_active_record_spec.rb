@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   attr_deprecated :a_deprecated_attribute
 end
 
-RSpec.describe "Integration with ActiveRecord", pending: true do
+RSpec.describe "Integration with ActiveRecord" do
   before do
     ActiveRecord::Base.send(:descendants).each do |klass|
       begin

@@ -31,7 +31,6 @@ RSpec.describe "AttrDeprecated" do
         config.enable       = false
         config.raise        = true
         config.rails_logger = { level: :error }
-        config.slack        = { webhook_url: 'http://my.webhook', channel: '#my-channel', username: 'notifications' }
       end
 
       expect(AttrDeprecated.configuration.enable).to be(false)

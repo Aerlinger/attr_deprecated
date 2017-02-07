@@ -1,5 +1,6 @@
 require 'active_support'
 
+require "attr_deprecated/version"
 require "attr_deprecated/configuration"
 
 require "notifiers/rails_logger"
@@ -32,7 +33,9 @@ module AttrDeprecated
     #
     # class macro definition to non-destructively mark an attribute as deprecated.
     #
-    # The original method (i.e. the one marked as deprecated) is renamed and wrapped in an alias that dispatches the notification.
+    # The original method (i.e. the one marked as deprecated) is renamed and wrapped in an alias that dispatches the
+    # notification.
+    #
     # (See the `around_alias` pattern. [Paolo Perotta. Metaprogramming Ruby, p. 121])
     #
     def attr_deprecated(*attributes)
